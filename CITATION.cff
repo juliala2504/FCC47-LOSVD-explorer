@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software or the data products in it, please cite the paper below."
+title: "FCC 47 Interactive LOSVD Explorer"
+abstract: "Interactive explorer for the non-parametric Bayes-LOSVD line-of-sight velocity distributions of the FCC 47 nuclear star cluster (SINFONI and MUSE)."
+authors:
+  - family-names: Lamprecht
+    given-names: Julia
+    email: lamprecht@sci.muni.cz
+    affiliation: "Masaryk University; University of Vienna"
+repository-code: "https://github.com/juliala2504/FCC47-LOSVD-explorer"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Recovering complex non-parametric LOSVDs with Bayes-LOSVD: The FCC 47 nuclear star cluster"
+  authors:
+    - family-names: Lamprecht
+      given-names: J.
+    - family-names: Falcón-Barroso
+      given-names: J.
+    - family-names: Jerabkova
+      given-names: T.
+    - family-names: Jethwa
+      given-names: P.
+    - family-names: Fahrion
+      given-names: K.
+    - family-names: Lyubenova
+      given-names: M.
+    - family-names: Martig
+      given-names: M.
+  journal: "Astronomy & Astrophysics"
+  year: 2026

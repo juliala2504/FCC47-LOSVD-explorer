@@ -1,0 +1,36 @@
+Final best-fit runs adopted from `Analysis.ipynb`
+=================================================
+
+FCC47
+-----
+MUSE
+  run          = FCC47_m_cube_v5_GP
+  filename     = fcc47_MUSE_in_SINF_fov.fits
+  instrument   = MUSE-WFM
+  redshift     = 0.004800
+  lmin         = 4750.0
+  lmax         = 5450.0
+  vmax         = 700.0
+  velscale     = 45.0
+  snr          = 100.0
+  snr_min      = 30.0
+  template_lib = MILES_SSP
+  npca         = 9
+  xcen         = 9
+  ycen         = 9
+
+SINFONI
+  run          = FCC47_s_cube_v9_GP
+  filename     = fcc47_cube_BWM.fits
+  instrument   = SINFONI_3D_linefit
+  redshift     = 0.005250
+  lmin         = 22100.0
+  lmax         = 23450.0
+  vmax         = 700.0
+  velscale     = 30.0
+  snr          = 40.0
+  snr_min      = 10.0
+  template_lib = XSL_Stars
+  npca         = 9
+  xcen         = 35
+  ycen         = 34

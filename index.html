@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FCC 47 — Interactive LOSVD Explorer</title>
+<meta name="description" content="Interactive explorer for the non-parametric Bayes-LOSVD line-of-sight velocity distributions of the FCC 47 nuclear star cluster (SINFONI and MUSE).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%231f4e79'/%3E%3Cpath d='M5 21c4 0 5-11 9-11s5 11 9 11' fill='none' stroke='white' stroke-width='2.4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="app">
+<!-- #region page -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="eyebrow">Companion to Lamprecht et al., <em>Astronomy &amp; Astrophysics</em></p>
+    <h1>FCC&nbsp;47 — Interactive LOSVD Explorer</h1>
+    <p class="lede">
+      Non-parametric line-of-sight velocity distributions of the FCC&nbsp;47 nuclear star cluster,
+      recovered with <span class="sc">Bayes-LOSVD</span> using a Gaussian-process prior.
+      Move the pointer across the kinematic map to read the posterior LOSVD of each spatial bin;
+      click to lock a bin.
+    </p>
+  </div>
+</header>
+
+<main>
+  <section class="panel toolbar-panel" aria-label="Display controls">
+    <div class="toolbar">
+      <div class="control">
+        <span class="control-label" id="lbl-dataset">Data set</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="lbl-dataset">
+          <button type="button" role="radio" aria-checked="true" data-dataset="FCC47_SINFONI">SINFONI</button>
+          <button type="button" role="radio" aria-checked="false" data-dataset="FCC47_MUSE">MUSE</button>
+        </div>
+      </div>
+
+      <div class="control">
+        <label class="control-label" for="quantity">Map quantity</label>
+        <select id="quantity">
+          <optgroup label="Velocity">
+            <option value="vel" selected>V — posterior median</option>
+            <option value="velmean">V — posterior mean</option>
+          </optgroup>
+          <optgroup label="Dispersion">
+            <option value="sigma">σ — posterior median</option>
+            <option value="sigmamean">σ — posterior mean</option>
+          </optgroup>
+          <optgroup label="Higher moments">
+            <option value="h3">h₃</option>
+            <option value="h4">h₄</option>
+          </optgroup>
+          <optgroup label="Data quality">
+            <option value="snr">S/N (effective)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="control">
+        <label class="control-label" for="bin">Spatial bin</label>
+        <select id="bin"></select>
+      </div>
+
+      <div class="control checks">
+        <span class="control-label">Options</span>
+        <label class="check"><input type="checkbox" id="overlay"> <span>Overlay matched <span id="other-name">MUSE</span> bin</span></label>
+        <label class="check"><input type="checkbox" id="common"> <span>Common colour scale</span></label>
+        <label class="check"><input type="checkbox" id="zoom" checked> <span>Velocity axis &plusmn;400 km s<sup>&minus;1</sup></span></label>
+      </div>
+
+      <div class="control downloads">
+        <span class="control-label">Download</span>
+        <div class="btn-row">
+          <button type="button" id="dl-losvd">LOSVD (CSV)</button>
+          <button type="button" id="dl-kin">Kinematics (CSV)</button>
+          <button type="button" id="dl-png">Figure (PNG)</button>
+        </div>
+      </div>
+    </div>
+    <p class="status" id="status" role="status">Hover the map to select a bin · click to lock</p>
+  </section>
+
+  <section class="figures" aria-label="Kinematic map and LOSVD">
+    <figure class="panel plot-panel" id="map-panel">
+      <figcaption class="plot-title" id="map-title">Kinematic map</figcaption>
+      <div class="canvas-wrap">
+        <canvas id="map-canvas" role="img" aria-label="Kinematic map of FCC 47; hover to select a spatial bin"></canvas>
+        <div class="tooltip" id="map-tooltip" hidden></div>
+      </div>
+    </figure>
+
+    <figure class="panel plot-panel" id="losvd-panel">
+      <figcaption class="plot-title" id="losvd-title">Line-of-sight velocity distribution</figcaption>
+      <div class="canvas-wrap">
+        <canvas id="losvd-canvas" role="img" aria-label="Posterior line-of-sight velocity distribution of the selected bin"></canvas>
+      </div>
+    </figure>
+  </section>
+
+  <section class="panel info-panel" aria-label="Selected bin">
+    <h2>Selected bin</h2>
+    <dl class="readout" id="readout"></dl>
+  </section>
+
+  <section class="notes">
+    <div class="panel note">
+      <h2>How to read this page</h2>
+      <ul>
+        <li>The <strong>left panel</strong> shows the projected quantity of the selected data set on the
+            spatial bins of the <span class="sc">PowerBin</span> tessellation; the dashed circle marks the
+            adopted NSC effective radius, <em>R</em><sub>eff</sub>&nbsp;=&nbsp;0.75″.</li>
+        <li>The <strong>right panel</strong> shows the posterior LOSVD of the selected bin: the solid line is
+            the posterior median, the shaded band the 16th–84th percentile credible interval, and the
+            dashed vertical line the median velocity of that bin.</li>
+        <li>With <strong>Overlay matched bin</strong> the LOSVD of the spatially nearest bin of the other data
+            set is drawn on top, the same nearest-neighbour matching used for the representative LOSVDs in
+            the paper. Because the two runs use different velocity sampling
+            (Δ<em>v</em>&nbsp;=&nbsp;30 and 45&nbsp;km&nbsp;s⁻¹), overlaid profiles are shown as densities
+            normalised to unit area, ∫<em>f</em>(<em>v</em>)&nbsp;d<em>v</em>&nbsp;=&nbsp;1.</li>
+        <li>Velocities are relative to the systemic velocity. S/N is the effective
+            S/N<sub>real</sub> measured a posteriori from the fit residuals.</li>
+      </ul>
+    </div>
+    <div class="panel note">
+      <h2>Data</h2>
+      <dl class="runs" id="runs"></dl>
+      <p class="fineprint">
+        Products are the posterior summaries of the adopted <span class="sc">Bayes-LOSVD</span> runs;
+        the page loads them directly as JSON and renders everything in the browser, with no server-side
+        computation.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="colophon">
+  <p><strong>Interactive LOSVD Explorer</strong> — companion to
+     “Recovering complex non-parametric LOSVDs with <span class="sc">Bayes-LOSVD</span>:
+     The FCC&nbsp;47 nuclear star cluster”, Lamprecht et&nbsp;al.</p>
+  <p>Julia Lamprecht · Masaryk University &amp; University of Vienna ·
+     <a href="mailto:lamprecht@sci.muni.cz">lamprecht@sci.muni.cz</a> ·
+     <a href="https://github.com/juliala2504/FCC47-LOSVD-explorer">source &amp; data on GitHub</a></p>
+  <p class="fineprint"><span class="sc">Bayes-LOSVD</span>: Falcón-Barroso &amp; Martig (2021);
+     posterior sampling with <span class="mono">NumPyro</span> (Phan et al. 2019).</p>
+</footer>
+<!-- #endregion page -->
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

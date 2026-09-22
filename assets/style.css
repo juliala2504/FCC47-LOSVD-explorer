@@ -210,8 +210,10 @@ canvas { display: block; width: 100%; height: auto; touch-action: pan-y; }
 }
 .readout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
-  gap: 14px 20px;
+  /* wide enough for the longest value; values wrap rather than run into
+     the neighbouring column */
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px 24px;
   margin: 0;
 }
 .readout div { min-width: 0; }
@@ -224,9 +226,11 @@ canvas { display: block; width: 100%; height: auto; touch-action: pan-y; }
 .readout dd {
   margin: 0;
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 14.5px;
+  line-height: 1.45;
   color: var(--ink);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 .readout dd .unit { color: var(--ink-faint); font-size: 12px; }
 .readout dd .pm { color: var(--ink-faint); font-size: 12.5px; }

@@ -84,19 +84,6 @@ bestfits.txt              adopted run identifiers
 tools/build_data.py       regenerates data/ from results/
 ```
 
-## Changes
-
-**12 October 2026.** Three corrections to the tables in `results/` and `data/`:
-
-* *h*₃ and *h*₄ are now in the normalisation of van der Marel & Franx (1993),
-  as in the paper. They were smaller by factors of 2√2 and 4.
-* The velocity axis of the LOSVDs is now relative to the systemic velocity, like
-  the kinematic maps. It was relative to the adopted redshift, which differs from
-  the systemic frame by 23.1 km s⁻¹ for SINFONI and 6.2 km s⁻¹ for MUSE.
-* The effective S/N is now the posterior median. It was too low by a factor 6/7.
-
-The LOSVD amplitudes, *V* and σ are unchanged.
-
 ## Citing
 
 Please cite the paper; `CITATION.cff` holds the full reference. The method is

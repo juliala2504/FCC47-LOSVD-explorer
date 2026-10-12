@@ -43,7 +43,8 @@ A version that runs the analysis stack live in a Jupyter session is available at
   shown as probability densities normalised to unit area,
   ∫*f*(*v*) d*v* = 1. Matching selects the nearest bin centre; the separation is
   quoted in the legend.
-* Velocities are relative to the systemic velocity. The quoted S/N is the
+* Velocities are relative to the systemic velocity. *h*₃ and *h*₄ follow the
+  definition of van der Marel & Franx (1993), as in pPXF. The quoted S/N is the
   effective S/N<sub>real</sub> measured a posteriori from the fit residuals, which
   is lower than the nominal binning target.
 
@@ -82,6 +83,19 @@ results/                  exported Bayes-LOSVD products (ECSV)
 bestfits.txt              adopted run identifiers
 tools/build_data.py       regenerates data/ from results/
 ```
+
+## Changes
+
+**12 October 2026.** Three corrections to the tables in `results/` and `data/`:
+
+* *h*₃ and *h*₄ are now in the normalisation of van der Marel & Franx (1993),
+  as in the paper. They were smaller by factors of 2√2 and 4.
+* The velocity axis of the LOSVDs is now relative to the systemic velocity, like
+  the kinematic maps. It was relative to the adopted redshift, which differs from
+  the systemic frame by 23.1 km s⁻¹ for SINFONI and 6.2 km s⁻¹ for MUSE.
+* The effective S/N is now the posterior median. It was too low by a factor 6/7.
+
+The LOSVD amplitudes, *V* and σ are unchanged.
 
 ## Citing
 
